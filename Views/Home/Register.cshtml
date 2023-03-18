@@ -1,0 +1,289 @@
+﻿@model MDM_Portal.Models.HCPUserModel
+
+@{ Layout = null; }
+
+@Html.AntiForgeryToken()
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Select2 -->
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css")
+    <!-- DataTable -->
+    @Styles.Render("~/Content/vendor/datatables/dataTables.bootstrap4.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/register.css")
+</head>
+
+<body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1" href="~/Home/Overview"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {
+                    <div id="welcome-user">Welcome, @Session["username"]</div>
+                }
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item btn-my-profile" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item btn-my-profile-logout" href="~/Home/Logout" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item" id="accounts-sidebar">
+                <a class="nav-link" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item" id="stewardship-sidebar">
+                <a class="nav-link" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Exceptions">
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
+                    <span>Exceptions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Reports">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="~/Home/Register">
+                    <i class="fas fa-registered"></i>
+                    <span>Register Account</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">Register Account</li>
+                </ol>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20">
+                                <div class="col-md-12 order-md-1">
+                                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="pills-add-account-tab" data-toggle="pill" href="#pills-add-account" role="tab" aria-controls="pills-add-account" aria-selected="true">Add Account</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="pills-user-list-tab" data-toggle="pill" href="#pills-user-list" role="tab" aria-controls="pills-user-list" aria-selected="false">Users</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div class="tab-pane fade show active" id="pills-add-account" role="tabpanel" aria-labelledby="pills-add-account-tab">
+                                            <form method="post" action="" id="registration-form">
+                                                <div class="form-group">
+                                                    <div class="form-row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-label-group">
+                                                                <input type="text" id="firstName" class="form-control" placeholder="First name" required="required" autofocus="autofocus">
+                                                                <label for="firstName">First name</label>
+                                                                <div class="invalid-feedback">This field is required.</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-md-0 mt-3">
+                                                            <div class="form-label-group">
+                                                                <input type="text" id="lastName" class="form-control" placeholder="Last name" required="required">
+                                                                <label for="lastName">Last name</label>
+                                                                <div class="invalid-feedback">This field is required.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-label-group">
+                                                        <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="required">
+                                                        <label for="inputUsername">Username</label>
+                                                        <div class="invalid-feedback">This field is required.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-label-group">
+                                                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required">
+                                                        <label for="inputEmail">Email address</label>
+                                                        <div class="invalid-feedback">This field is required.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-label-group">
+                                                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required">
+                                                        <label for="inputPassword">Password</label>
+                                                        <div class="invalid-feedback">This field is required.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-row">
+                                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                            <div class="form-label-group">
+                                                                <select class="custom-select d-block w-100" id="ddRole" required>
+                                                                    <option value="" selected>Select a role...</option>
+                                                                    <option value="User">User</option>
+                                                                    <option value="Admin">Admin</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-md-0 mt-3">
+                                                            <div class="form-label-group">
+                                                                <select class="custom-select d-block w-100" id="ddTerritory"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="button" class="btn btn-block btn-register" value="Register Account" />
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-user-list" role="tabpanel" aria-labelledby="pills-user-list-tab">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm" clientidmode="Static" id="dataTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Username</th>
+                                                            <th scope="col">Email</th>
+                                                            <th scope="col">First Name</th>
+                                                            <th scope="col">Last Name</th>
+                                                            <th scope="col">Role</th>
+                                                            <th scope="col">Territory</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">Creation Date</th>
+                                                            <th scope="col">Modified Date</th>
+                                                            <th scope="col">Created By</th>
+                                                            <th scope="col">Modified By</th>
+                                                            <th scope="col">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-logout" href="~/Home/Login">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- Nofify -->
+@Scripts.Render("~/Content/vendor/notify.js/notify.js")
+<!-- Select2 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js")
+<!-- Datatable -->
+@Scripts.Render("~/Content/vendor/datatables/jquery.dataTables.min.js")
+@Scripts.Render("~/Content/vendor/datatables/dataTables.bootstrap4.js")
+@Scripts.Render("https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/pages/register.js")
+@Scripts.Render("~/Content/js/session-timeout.js")

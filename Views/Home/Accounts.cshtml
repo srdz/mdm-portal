@@ -1,0 +1,357 @@
+﻿@model MDM_Portal.Models.HCPDetailsModel
+
+@{ Layout = null; }
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- jQuery -->
+    @*@Styles.Render("//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")*@
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Bootstrap -->
+    @Styles.Render("~/Content/bootstrap.min.css")
+    <!-- Date Picker -->
+    @Styles.Render("~/Content/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.css")
+    <!-- DataTable -->
+    @Styles.Render("~/Content/vendor/datatables/dataTables.bootstrap4.css")
+    @*@Styles.Render("https://cdn.datatables.net/plug-ins/1.10.19/features/searchHighlight/dataTables.searchHighlight.css")*@
+    @*@Styles.Render("https://cdn.datatables.net/scroller/2.0.1/css/scroller.dataTables.min.css")*@
+    <!-- Bootstrap Toggle -->
+    @*@Styles.Render("https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css")*@
+    <!-- Ionicons -->
+    @*@Styles.Render("https://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css")*@
+    <!-- LeafletJS -->
+    @*
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css")
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css")
+    @Styles.Render("https://yafred.github.io/leaflet-responsive-popup/assets/leaflet.responsive.popup.css")
+    @Styles.Render("https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css")
+    @Styles.Render("https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css")
+    *@
+    <!-- Tooltip -->
+    @*@Styles.Render("//min.gitcdn.xyz/repo/wintercounter/Protip/master/protip.min.css")*@
+    @*@Styles.Render("//gitcdn.link/repo/wintercounter/Protip/master/protip.min.css")*@
+    @Styles.Render("https://cdn.jsdelivr.net/npm/protip@1.4.21/protip.min.css")
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
+    <!-- Select2 -->
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css")
+    <!-- Daterangepicker -->
+    @Styles.Render("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/accounts.css")
+</head>
+
+<body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1 overview-page" href="~/Home/Overview" id="home-search"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navbar Customers -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {<div id="welcome-user">Welcome, @Session["username"]</div>}
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item btn-my-profile" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+        <div class="loader">Loading...</div>
+
+        <!-- Hidden input from Statistics page -->
+        <input type="hidden" name="dashboard-specialty-degree-state" value="@ViewBag.param" />
+        <input type="hidden" name="obj-user" id="obj-user" value="@Session["_id"]" />
+        <input type="hidden" name="obj-user-role" id="obj-user-role" value="@Session["role"]" />
+        <input type="hidden" name="obj-specialty-filter" id="obj-specialty-filter" value="" />
+        <input type="hidden" name="switch_list_map" id="switch_list_map" value="0" />
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link btn-overview" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn-customers" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item active" id="accounts-sidebar">
+                <a class="nav-link btn-hco-accounts" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item" id="stewardship-sidebar">
+                <a class="nav-link btn-stewardship" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps btn-changerequests" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link btn-exception" href="~/Home/Exceptions">
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
+                    <span>Exceptions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn-query" href="~/Home/Reports">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <div class="breadcrumb-nav-container">
+                    <ol class="breadcrumb border-bottom border-gray">
+                        <li class="breadcrumb-item active">Accounts</li>
+                    </ol>
+                </div>
+
+                <!-- Icon Cards-->
+                <div class="row mt-5">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body p-10">
+                                <div class="row text-center pb-2">
+                                    <div class="col-lg-1 col-md-6"></div>
+                                    <div class="col-lg-2 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalAccounts"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Accounts</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalNPI"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">NPI</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalCot"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Class Of Trade</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalFacilityType"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Facility Type</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalStates"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">States</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1 col-md-6 mt-md-0 mt-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkbox Filter Values-->
+                <div class="row">
+                    <div class="col-xl-12 col-sm-6 mb-3 mt-3" id="checkbox-filter"></div>
+                </div>
+
+                <!-- Switch button toggle -->
+                <div class="mb-3">
+                    <small class="d-block text-right mt-3">
+                        <input class="btn btn-info btn-sm" type="button" value="Reset Filter" id="reset-btn-filter">
+                    </small>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-3 col-sm-6 mb-3 div-npi"></div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-account-name"></div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-last-updated-date"></div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-class-of-trade">
+                        <select class="form-control search-class-of-trade" id="class-of-trade">
+                            <option value="1">Search a COT</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-3 col-sm-6 mb-3 div-facility-type">
+                        <select class="form-control search-facility-type" id="facility-type">
+                            <option value="5">Search a Facility Type</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-state">
+                        <select class="form-control search-state" id="state">
+                            <option value="2">Search a State</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-territory">
+                        <select class="form-control search-territory" id="territory">
+                            <option value="3">Search a Territory</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-status">
+                        <select class="form-control search-status" id="status">
+                            <option value="4">Search a Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- List & Map View -->
+                <div class="row mt-4">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20">
+                                <!-- add code here... -->
+                                <div class="mb-3">
+                                    <div class="my-3 p-3 bg-white rounded shadow-sm list-box">
+                                        <div class="media text-muted pt-3">
+                                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                                                <strong class="d-block text-gray-dark"></strong>
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm" clientidmode="Static" id="dataTable" width="100%" cellspacing="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="border-table">NPI</th>
+                                                                <th class="border-table">Account Name</th>
+                                                                <th class="border-table">Class Of Trade</th>
+                                                                <th class="border-table">Last Updated Date</th>
+                                                                <th class="border-table">Facility Type</th>
+                                                                <th class="border-table">State</th>
+                                                                <th class="border-table">Status</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <input type="button" class="btn btn-logout" value="Logout" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Moment -->
+@Scripts.Render("~/Scripts/moment.min.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- Date Picker -->
+@Scripts.Render("~/Content/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.js")
+<!-- Bootstrap Toggle -->
+@*@Scripts.Render("https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js")*@
+<!-- DataTable -->
+@Scripts.Render("~/Content/vendor/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Content/vendor/datatables/dataTables.bootstrap4.js")
+@*@Scripts.Render("https://cdn.datatables.net/plug-ins/1.10.19/features/searchHighlight/dataTables.searchHighlight.min.js")*@
+@*@Scripts.Render("https://bartaz.github.io/sandbox.js/jquery.highlight.js")*@
+@Scripts.Render("https://cdn.datatables.net/plug-ins/1.10.19/api/fnFilterClear.js")
+@Scripts.Render("https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js")
+@*@Scripts.Render("https://cdn.datatables.net/scroller/2.0.1/js/dataTables.scroller.min.js")*@
+<!-- Tooltip -->
+@*@Scripts.Render("//min.gitcdn.xyz/repo/wintercounter/Protip/master/protip.min.js")*@
+@*@Scripts.Render("//gitcdn.link/repo/wintercounter/Protip/master/protip.min.js")*@
+@Scripts.Render("https://cdn.jsdelivr.net/npm/protip@1.4.21/protip.min.js")
+<!-- LeafletJS -->
+@*@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js")
+    @Scripts.Render("https://yafred.github.io/leaflet-responsive-popup/assets/leaflet.responsive.popup.js")
+    @Scripts.Render("https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js")
+    @Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/leaflet-plugins/3.3.0/layer/vector/KML.js")*@
+<!-- Select2 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js")
+<!-- Daterange picker -->
+@Scripts.Render("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/pages/accounts.js")
+@Scripts.Render("~/Content/js/session-timeout.js")

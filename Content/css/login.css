@@ -1,0 +1,15 @@
+﻿.btn-login {
+    color: #fff;
+    background-color: #e30e73;
+    border-color: #e30e73;
+}
+
+.btn-login:hover {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+#error-alert, #success-alert {
+    margin: 0 auto;
+}

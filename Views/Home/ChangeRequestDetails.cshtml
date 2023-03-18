@@ -1,0 +1,280 @@
+﻿@model MDM_Portal.Models.HCPDetailsModel
+
+@{ Layout = null; }
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/change-request-details.css")
+</head>
+
+<body id="page-top">
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1" href="~/Home/Overview"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {<div id="welcome-user">Welcome, @Session["username"]</div>}
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item btn-my-profile" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item btn-my-profile-logout" href="~/Home/Logout" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+        <div class="loader">Loading...</div>
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item" id="accounts-sidebar">
+                <a class="nav-link" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item" id="stewardship-sidebar">
+                <a class="nav-link" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Query">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Query</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="~/Home/ChangeRequestDetails">
+                    <i class="fas fa-fw far fa-id-badge"></i>
+                    <span>Change Request Detail</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <div class="breadcrumb-nav-container">
+                    <ol class="breadcrumb border-bottom border-gray">
+                        <li class="breadcrumb-item active">Change Request Detail</li>
+                    </ol>
+                </div>
+
+                <!-- Profiler Profile View -->
+                <div class="row provider-profile-view">
+
+                    <!-- Hidden input from search page -->
+                    <input type="hidden" name="cr-id" id="cr-id" value="@ViewBag.param" />
+                    <input type="hidden" name="exception-description" id="exception-description" value="@ViewBag.paramDescription" />
+
+                    <!-- Exceptions button -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" id="exceptions_buttons_details">
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group mr-2 mt-1" role="group">
+                                <button name="View" value="Approve|@ViewBag.param" class="btn btn-success btn-exception btn-approve btn-sm">Approved</button>
+                            </div>
+                            <div class="btn-group mr-2 mt-1" role="group">
+                                <button name="View" value="Reject|@ViewBag.param" class="btn btn-danger btn-exception btn-reject btn-sm">Rejected</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Request -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                        <div class="align-items-center p-3 my-3 bg-white rounded shadow-sm">
+                            <p>
+                                <strong class="section-title">Request</strong>
+
+                                <a href="#block-change-request" data-toggle="collapse" aria-expanded="true" aria-controls="block-change-request">
+                                    <img src="~/Content/images/arrow-down.png" id="arrow-down-change-request" class="collapsed-change-request" />
+                                    <img src="~/Content/images/arrow-up.png" id="arrow-up-change-request" class="expanded-change-request" />
+                                </a>
+                            </p>
+
+                            <div class="collapse show box-section scrollbar-ripe-malinka" id="block-change-request">
+                                <div id="change-request-detail"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                        <div class="align-items-center p-3 my-3 bg-white rounded shadow-sm">
+                            <p>
+                                <strong class="section-title">Customer</strong>
+
+                                <a href="#block-customer" data-toggle="collapse" aria-expanded="true" aria-controls="block-customer">
+                                    <img src="~/Content/images/arrow-down.png" id="arrow-down-customer" class="collapsed-customer" />
+                                    <img src="~/Content/images/arrow-up.png" id="arrow-up-customer" class="expanded-customer" />
+                                </a>
+                            </p>
+
+                            <div class="collapse show box-section scrollbar-ripe-malinka" id="block-customer">
+                                <div id="customer-detail"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                        <div class="align-items-center p-3 my-3 bg-white rounded shadow-sm">
+                            <p>
+                                <strong class="section-title">Account</strong>
+
+                                <a href="#block-account" data-toggle="collapse" aria-expanded="true" aria-controls="block-account">
+                                    <img src="~/Content/images/arrow-down.png" id="arrow-down-account" class="collapsed-account" />
+                                    <img src="~/Content/images/arrow-up.png" id="arrow-up-account" class="expanded-account" />
+                                </a>
+                            </p>
+
+                            <div class="collapse show box-section scrollbar-ripe-malinka" id="block-account">
+                                <div id="account-detail"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Affiliation -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                        <div class="align-items-center p-3 my-3 bg-white rounded shadow-sm">
+                            <p>
+                                <strong class="section-title">Affiliation</strong>
+
+                                <a href="#block-affiliation" data-toggle="collapse" aria-expanded="true" aria-controls="block-affiliation">
+                                    <img src="~/Content/images/arrow-down.png" id="arrow-down-affiliation" class="collapsed-affiliation" />
+                                    <img src="~/Content/images/arrow-up.png" id="arrow-up-affiliation" class="expanded-affiliation" />
+                                </a>
+                            </p>
+
+                            <div class="collapse show box-section scrollbar-ripe-malinka" id="block-affiliation">
+                                <div id="affiliation-detail"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal confirmation box for Approve/Reject -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-confirmation">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to <span id="yes_no_confirmation"></span> this record?</p>
+                            <p><u>Description:</u> <span id="exception_description_modal"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" value="Yes" class="btn btn-confirmation btn-success">Yes</button>
+                            <button type="button" value="No" class="btn btn-confirmation btn-danger">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /#wrapper -->
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded page-top" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-logout" href="~/Home/Logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Moment -->
+@Scripts.Render("~/Scripts/moment.min.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/pages/change-request-details.js")
+@Scripts.Render("~/Content/js/session-timeout.js")

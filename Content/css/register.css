@@ -1,0 +1,326 @@
+﻿.btn-session-timeout {
+    color: #fff;
+    background-color: #e30e73;
+    border-color: #e30e73;
+}
+
+.btn-session-timeout:hover {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+#content-wrapper {
+    background: #F3F3F3;
+}
+
+input.btn-register, .btn-update-record, .btn-modal-ur {
+    color: #fff;
+    background-color: #e30e73;
+    border-color: #e30e73;
+}
+
+.btn-update-record:hover, .btn-modal-ur:hover {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-logout {
+    color: #fff;
+    background-color: #e30e73;
+    border-color: #e30e73;
+}
+
+.btn-logout:hover {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-logout:focus, .btn-logout.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-logout.disabled, .btn-logout:disabled {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-logout:not(:disabled):not(.disabled):active, .btn-logout:not(:disabled):not(.disabled).active,
+.show > .btn-logout.dropdown-toggle {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-logout:not(:disabled):not(.disabled):active:focus, .btn-logout:not(:disabled):not(.disabled).active:focus,
+.show > .btn-logout.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-my-profile-logout:focus, .btn-my-profile-logout.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-my-profile-logout.disabled, .btn-my-profile-logout:disabled {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-my-profile-logout:not(:disabled):not(.disabled):active, .btn-my-profile-logout:not(:disabled):not(.disabled).active,
+.show > .btn-my-profile-logout.dropdown-toggle {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-my-profile-logout:not(:disabled):not(.disabled):active:focus, .btn-my-profile-logout:not(:disabled):not(.disabled).active:focus,
+.show > .btn-my-profile-logout.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+#welcome-user {
+    color: #fff;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #e30e73;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #e30e73;
+    border-color: #e30e73;
+}
+
+.page-link {
+    color: #000000;
+}
+
+.page-link:hover {
+    color: #7b7070;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    display: block;
+    padding-left: 8px;
+    padding-right: 55px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 38px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 35px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 26px;
+    position: absolute;
+    top: 7px;
+    right: 1px;
+    width: 20px;
+}
+
+.fa-pencil-alt, .fa-save {
+    cursor: pointer;
+}
+
+.fa-save {
+    display: none;
+}
+
+.btn-register:focus, .btn-register.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-register.disabled, .btn-register:disabled {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-register:not(:disabled):not(.disabled):active, .btn-register:not(:disabled):not(.disabled).active,
+.show > .btn-register.dropdown-toggle {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-register:not(:disabled):not(.disabled):active:focus, .btn-register:not(:disabled):not(.disabled).active:focus,
+.show > .btn-register.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-my-profile:focus, .btn-my-profile.focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-my-profile.disabled, .btn-my-profile:disabled {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-my-profile:not(:disabled):not(.disabled):active, .btn-my-profile:not(:disabled):not(.disabled).active,
+.show > .btn-my-profile.dropdown-toggle {
+    color: #fff;
+    background-color: #b81866;
+    border-color: #b81866;
+}
+
+.btn-my-profile:not(:disabled):not(.disabled):active:focus, .btn-my-profile:not(:disabled):not(.disabled).active:focus,
+.show > .btn-my-profile.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.table-responsive {
+    margin-top: -50px;
+}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, tfoot, th, td, tr {
+        display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tfoot tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        border: 1px solid #ccc;
+    }
+
+    td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    td:before {
+        /* Now like a table header */
+        /*position: absolute;*/
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    td:nth-of-type(1):before {
+        content: "Username: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(2):before {
+        content: "Email: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(3):before {
+        content: "First Name: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(4):before {
+        content: "Last Name: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(5):before {
+        content: "Role: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(6):before {
+        content: "Territory: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(7):before {
+        content: "Status: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(8):before {
+        content: "Creation Date: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(9):before {
+        content: "Modified Date: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(10):before {
+        content: "Created By: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(11):before {
+        content: "Modified By: ";
+        font-weight: bold;
+    }
+
+    td:nth-of-type(12):before {
+        content: "Actions: ";
+        font-weight: bold;
+    }
+}
+
+.card {
+    box-shadow: 0 0 0 0 rgba(90, 113, 208, 0.11), 0 4px 16px 0 rgba(167, 175, 183, 0.33);
+    border: solid 1px #dde4eb;
+    border-radius: 5px;
+}
+
+.text-pra {
+    color: #e30e73;
+    font-size: 16px;
+}
+
+.dataTables_length {
+    margin-top: 60px;
+}

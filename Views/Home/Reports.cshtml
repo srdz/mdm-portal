@@ -1,0 +1,334 @@
+﻿@model MDM_Portal.Models.HCPDetailsModel
+
+@{ Layout = null; }
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- Bootstrap -->
+    @Styles.Render("~/Content/bootstrap.min.css")
+    <!-- Select2 -->
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css")
+    <!-- DataTable -->
+    @Styles.Render("~/Content/vendor/datatables/dataTables.bootstrap4.css")
+    @Styles.Render("https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css")
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Pivot Table -->
+    @Styles.Render("~/Content/vendor/pivottable-master/dist/pivot.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/reports.css")
+</head>
+
+<body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1" href="~/Home/Overview" id="home-search"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {<div id="welcome-user">Welcome, @Session["username"]</div>}
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item btn-my-profile" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+        <div class="loader">Loading...</div>
+
+        <!-- Hidden input -->
+        <input type="hidden" name="dashboard-specialty-degree-state" value="@ViewBag.param" />
+        <input type="hidden" name="obj-user" id="obj-user" value="@Session["_id"]" />
+        <input type="hidden" name="obj-user-role" id="obj-user-role" value="@Session["role"]" />
+        <input type="hidden" name="obj-specialty-filter" id="obj-specialty-filter" value="" />
+        <input type="hidden" name="switch_list_map" id="switch_list_map" value="0" />
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item" id="accounts-sidebar">
+                <a class="nav-link" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item" id="stewardship-sidebar">
+                <a class="nav-link" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Exceptions">
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
+                    <span>Exceptions</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="~/Home/Reports">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <div class="breadcrumb-nav-container">
+                    <ol class="breadcrumb border-bottom border-gray">
+                        <li class="breadcrumb-item active">Query</li>
+                    </ol>
+                </div>
+
+                <!-- Export inputs-->
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-predefined-report-tab" data-toggle="pill" href="#pills-predefined-report" role="tab" aria-controls="pills-profile" aria-selected="false">Predefined Report</a>
+                            </li>
+                            @*<li class="nav-item">
+                                <a class="nav-link" id="pills-create-report-tab" data-toggle="pill" href="#pills-create-report" role="tab" aria-controls="pills-home" aria-selected="true">Build Your Report</a>
+                            </li>*@
+                        </ul>
+
+                        <div class="mt-5 tab-content" id="pills-tabContent">
+                            <!-- Predefined Report Tab -->
+                            <div class="tab-pane fade show active" id="pills-predefined-report" role="tabpanel" aria-labelledby="pills-predefined-report-tab">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-md-0 mt-4">
+                                                <select class="form-control report-table">
+                                                    <option value="">Select a Report...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Report-->
+                                        <div class="row mt-5 report-csv">
+                                            <div class="col">
+                                                <div class="overflow-auto scrollbar-ripe-malinka">
+                                                    <div class="card">
+                                                        <div class="card-body p-20">
+                                                            <div id="table-container">
+                                                                <table class="table table-sm" clientidmode="Static" id="dataTableReport" width="100%" cellspacing="0"></table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Create Your Report Tab -->
+                            <div class="mt-5 tab-pane fade" id="pills-create-report" role="tabpanel" aria-labelledby="pills-create-report-tab">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-md-0 mt-4">
+                                        <select class="form-control sl-table">
+                                            <option value="">Select a table...</option>
+                                            <option value="bestaddress">Customers</option>
+                                            <option value="stewardship">Stewardship</option>
+                                            <option value="account">Accounts</option>
+                                            <option value="change-request">Change Request</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-md-0 mt-4">
+                                        <input type="text" class="form-control" id="file-name" placeholder="Name your file/save search here..." />
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4 col-xl-4 mt-md-0 mt-4">
+                                        <div class="btn-toolbar btns" role="toolbar">
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-export">Export File</button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-save-search">Save Search</button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" value="1" class="btn btn-reset-table">Reset Table</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Saved Search -->
+                                <div class="row mt-5">
+                                    <div class="col">
+                                        <div class="card saved-search-div">
+                                            <div class="card-body p-20">
+                                                <i class="fas fa-bookmark"></i> <span>Saved Search</span>
+                                                <div class="col">
+                                                    <p id="bookmark"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Report-->
+                                <div class="row mt-5">
+                                    <div class="col">
+                                        <div class="overflow-auto scrollbar-ripe-malinka">
+                                            <div id="report-builder-bestaddress"></div>
+                                            <div id="report-builder-stewardship"></div>
+                                            <div id="report-builder-account"></div>
+                                            <div id="report-builder-change-request"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal confirmation box for Yes/No -->
+                                <div class="modal" tabindex="-1" role="dialog" id="modal-confirmation">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirmation</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete this saved search?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" value="Yes" class="btn btn-confirmation btn-success">Yes</button>
+                                                <button type="button" value="No" class="btn btn-confirmation btn-danger">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <input type="button" class="btn btn-logout" value="Logout" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+@Scripts.Render("https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Moment -->
+@Scripts.Render("~/Scripts/moment.min.js")
+<!-- Popper -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- CSV to HTML -->
+@Scripts.Render("~/Content/vendor/csv/js/jquery.csv.min.js")
+@*@Scripts.Render("~/Content/vendor/csv/js/jquery.dataTables.min.js")*@
+@*@Scripts.Render("~/Content/vendor/csv/js/dataTables.bootstrap.js")*@
+@Scripts.Render("~/Content/vendor/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Content/vendor/datatables/dataTables.bootstrap4.js")
+@Scripts.Render("~/Content/vendor/csv/js/csv_to_html_table.js")
+<!-- DataTable -->
+@Scripts.Render("https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js")
+@Scripts.Render("https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js")
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js")
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js")
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js")
+@Scripts.Render("https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js")
+<!-- Select2 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js")
+<!-- D3 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js")
+<!-- Plot.ly -->
+@Scripts.Render("https://cdn.plot.ly/plotly-basic-latest.min.js")
+<!-- Pivot Table -->
+@Scripts.Render("~/Content/vendor/pivottable-master/dist/pivot.js")
+@Scripts.Render("~/Content/vendor/pivottable-master/dist/export_renderers.js")
+@Scripts.Render("~/Content/vendor/pivottable-master/dist/d3_renderers.js")
+@Scripts.Render("~/Content/vendor/pivottable-master/dist/plotly_renderers.js")
+<!-- Table2Excel -->
+@Scripts.Render("https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js")
+<!-- Nofify -->
+@Scripts.Render("~/Content/vendor/notify.js/notify.js")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/pages/reports.js")
+@Scripts.Render("~/Content/js/session-timeout.js")

@@ -1,0 +1,345 @@
+﻿@{ Layout = null; }
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Main page that contain filters and graphs.">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Select2 -->
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/overview.css")
+</head>
+
+<body id="page-top">
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1" href="~/Home/Overview"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {
+                    <div id="welcome-user">Welcome, @Session["username"]</div>
+                }
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="~/Home/MyProfile" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+        <div class="loader">Loading...</div>
+
+        <input type="hidden" name="obj-user" id="obj-user" value="@Session["_id"]" />
+        <input type="hidden" name="obj-user-client" id="obj-user-client" value="@Session["client"]" />
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item" id="accounts-sidebar">
+                <a class="nav-link" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item" id="stewardship-sidebar">
+                <a class="nav-link" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Exceptions">
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
+                    <span>Exceptions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/Home/Reports">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <ol class="breadcrumb border-bottom border-gray">
+                    <li class="breadcrumb-item active">Overview</li>
+                </ol>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-md-0 mt-4">
+                                <select class="form-control search-source">
+                                    <option value="" selected>Search a Source</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-md-0 mt-4">
+                                <select class="form-control search-specialty">
+                                    <option value="" selected>Search a Specialty</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 mt-md-0 mt-4">
+                                <select class="form-control search-territory">
+                                    <option value="" selected>Search a Territory</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body p-10">
+                                <div class="row text-center pb-2">
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalPhysicians"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Physicians</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalNPI"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">NPI</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalSpecialties"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Specialties</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalDegrees"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Credentials</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalStates"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">States</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalTarget"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Targets</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body p-10">
+                                <div class="row text-center pb-2">
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="stewardship_record_count"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Stewardship Total</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="stewardship_not_validated_record_count"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Stewardship Not Validated</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="stewardship_validated_record_count"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Stewardship Validated</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="stewardship_pending_record_count"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Stewardship Open</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="total_sla_batch"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">SLA Batch</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 col-sm-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="total_sla_ongoing"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">SLA Ongoing</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-change-request-by-type" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-customer-in-source" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-top-ten-credentials" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-stewardship-validation-status" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-stewardship-request-per-year" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-6 mt-4 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20 scroll-box-y scrollbar-ripe-malinka">
+                                <canvas id="canvas-change-request-per-year" width="800" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-logout" href="~/Home/Login">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Moment JS -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- Numeric -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js")
+<!-- Select2 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js")
+<!-- ChartJS -->
+@Scripts.Render("~/Content/vendor/chart.js/Chart.js")
+@Scripts.Render("https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/chart-pie.js")
+@Scripts.Render("~/Content/js/pages/overview.js")
+@Scripts.Render("~/Content/js/session-timeout.js")

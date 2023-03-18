@@ -1,0 +1,351 @@
+﻿@{ Layout = null; }
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Customer Master Portal</title>
+
+    <!-- Font Awesome -->
+    @Styles.Render("~/Content/vendor/fontawesome-free/css/all.min.css")
+    <!-- Bootstrap -->
+    @Styles.Render("~/Content/bootstrap.min.css")
+    <!-- DataTable -->
+    @Styles.Render("~/Content/vendor/datatables/dataTables.bootstrap4.css")
+    <!-- Select2 -->
+    @Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css")
+    <!-- Daterangepicker -->
+    @Styles.Render("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css")
+    <!-- Custom -->
+    @Styles.Render("~/Content/css/sb-admin.css")
+    @Styles.Render("~/Content/css/stewardship.css")
+</head>
+
+<body id="page-top">
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+        <a class="navbar-brand mr-1 overview-page" href="~/Home/Overview"><img src="~/Content/images/prahs logo.png" width="30" /> Customer Master Portal</a>
+
+        <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Navbar Search -->
+        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+            <div class="input-group">
+                @if (Session != null && Session["username"].ToString() != "")
+                {<div id="welcome-user">Welcome, @Session["username"]</div>}
+            </div>
+        </form>
+
+        <!-- Navbar -->
+        <ul class="navbar-nav ml-auto ml-md-0">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-fw"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a class="dropdown-item btn-my-profile" href="~/Home/MyProfile">View Profile</a>
+                    @if (Session != null && Session["role"].ToString() != "" && Session["role"].Equals("Admin"))
+                    {
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Administration <i class="fas fa-user-cog"></i></h6>
+                        <a class="dropdown-item btn-register" href="~/Home/Register">Register Account</a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout <i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </li>
+        </ul>
+
+    </nav>
+
+    <div id="wrapper">
+        <div class="loader">Loading...</div>
+
+        <!-- Sidebar -->
+        <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link btn-overview" href="~/Home/Overview">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn-customers" href="~/Home/Customers">
+                    <i class="fas fa-fw fa-user-md"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item" id="accounts-sidebar">
+                <a class="nav-link btn-hco-accounts" href="~/Home/Accounts">
+                    <i class="fas fa-fw fa-hospital-alt"></i>
+                    <span>Accounts</span>
+                </a>
+            </li>
+            <li class="nav-item active" id="stewardship-sidebar">
+                <a class="nav-link btn-stewardship" href="~/Home/Stewardship">
+                    <i class="fas fa-fw fa-exchange-alt"></i>
+                    <span>Stewardship</span>
+                </a>
+            </li>
+            @if (!Session["email"].ToString().Contains("prahs"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link link-mr-hcps btn-changerequests" href="~/Home/ChangeRequests">
+                        <i class="fas fa-fw fa-th-list"></i>
+                        <span>Change Requests</span>
+                    </a>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link btn-exception" href="~/Home/Exceptions">
+                    <i class="fas fa-fw fa-exclamation-circle"></i>
+                    <span>Exceptions</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn-query" href="~/Home/Reports">
+                    <i class="fas fa-fw fa-file-contract"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+        </ul>
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+
+                <!-- Breadcrumbs-->
+                <div class="breadcrumb-nav-container">
+                    <ol class="breadcrumb border-bottom border-gray">
+                        <li class="breadcrumb-item active">Stewardship</li>
+                    </ol>
+                </div>
+
+                <!-- Icon Cards-->
+                <div class="row mt-5">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body p-10">
+                                <div class="row text-center pb-2">
+                                    <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            @*<h3 class="mb-0 font-weight-semibold"><span id="totalInquiries"></span></h3>*@
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalOpen"></span></h3>
+                                            @*<h5 class="mb-0 font-weight-medium text-pra">Number of inquiries</h5>*@
+                                            <h5 class="mb-0 font-weight-medium text-pra">Total Open</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalPending"></span></h3>
+                                            @*<h5 class="mb-0 font-weight-medium text-pra">Number of pending</h5>*@
+                                            <h5 class="mb-0 font-weight-medium text-pra">Total Pending</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalCompleted"></span></h3>
+                                            @*<h5 class="mb-0 font-weight-medium text-pra">Number of closed</h5>*@
+                                            <h5 class="mb-0 font-weight-medium text-pra">Total Closed</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
+                                        <div class="wrapper">
+                                            @*<h3 class="mb-0 font-weight-semibold"><span id="totalProject"></span></h3>*@
+                                            @*<h5 class="mb-0 font-weight-medium text-pra">Total Project</h5>*@
+                                            <h3 class="mb-0 font-weight-semibold"><span id="totalInquiries"></span></h3>
+                                            <h5 class="mb-0 font-weight-medium text-pra">Total Inquiries</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkbox Filter Values-->
+                <div class="row">
+                    <div class="col-xl-12 col-sm-6 mb-3 mt-3" id="checkbox-filter"></div>
+                </div>
+
+                <!-- Switch button toggle -->
+                <div class="mb-3">
+                    <small class="d-block text-right mt-3">
+                        <input class="btn btn-info btn-sm" type="button" value="Reset Filter" id="reset-btn-filter">
+                    </small>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-3 col-sm-6 mb-3 div-name"></div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-created-date"></div>
+                    @*<div class="col-xl-3 col-sm-6 mb-3 div-submitted-date"></div>*@
+                    <div class="col-xl-3 col-sm-6 mb-3 div-received-date"></div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-project">
+                        <select class="form-control search-project" id="project">
+                            <option value="0">Search a Project</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-3 col-sm-6 mb-3 div-status">
+                        <select class="form-control search-status" id="status">
+                            <option value="1">Search a Status</option>
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-online-validation-status">
+                        <select class="form-control search-online-validation-status" id="online">
+                            <option value="2">Search a Online Validation Status</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-sm-6 mb-3 div-phone-validation-status">
+                        <select class="form-control search-phone-validation-status" id="phone">
+                            <option value="3">Search a Phone Validation Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="row mt-4">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body p-20">
+                                <div class="mb-3">
+                                    <div class="my-3 p-3 bg-white rounded shadow-sm list-box">
+                                        <div class="media text-muted pt-3">
+                                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm" clientidmode="Static" id="dataTable" width="100%" cellspacing="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th class="border-table">Name</th>
+                                                                <th class="border-table">Created Date</th>
+                                                                <th class="border-table">Submitted Date</th>
+                                                                <th class="border-table">Returned Date</th>
+                                                                <th class="border-table">Project</th>
+                                                                <th class="border-table">Status</th>
+                                                                <th class="border-table">SLA</th>
+                                                                <th class="border-table">Online Validation Status</th>
+                                                                <th>Phone Validation Status</th>
+                                                                @*<th>Manage Exception</th>*@
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Modal confirmation box for Approve/Reject -->
+    <div class="modal" tabindex="-1" role="dialog" id="modal-confirmation">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail</h5>
+
+                    <div class="btn-toolbar" role="toolbar" style="padding-left: 200px;">
+                        <div class="btn-group mr-2 mt-1" role="group">
+                            <button type="button" value="Yes" class="btn btn-confirmation btn-success">Approve</button>
+                        </div>
+                        <div class="btn-group mr-2 mt-1" role="group">
+                            <button type="button" value="No" class="btn btn-confirmation btn-danger">Reject</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <span id="dName"></span><br />
+                            <span id="dAddress"></span><br />
+                            <span id="dCity"></span>, <span id="dState"></span>, <span id="dZip"></span><br />
+                            <span id="dTelephone"></span>
+                        </div>
+                        <div class="form-group col-md-6" style="padding-left: 56px;">
+                            <span id="dCredentials"></span><br />
+                            <span id="dPrimarySpecialty"></span><br />
+                            <span id="dSecondarySpecialty"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        Request Type: <span id="dReq_type"></span><br />
+                        Exception Description: <span id="dExc_desc"></span><br />
+                        Territory: <span id="dTerritory"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-logout" href="~/Home/Login">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- jQuery -->
+@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+<!-- jQuery Easy -->
+@Scripts.Render("~/Content/vendor/jquery-easing/jquery.easing.min.js")
+<!-- Session Timeout -->
+@Scripts.Render("~/Content/vendor/Session-Timeout/dist/jquery.userTimeout.js")
+<!-- Moment -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js")
+<!-- Bootstrap -->
+@Scripts.Render("~/Scripts/bootstrap.min.js")
+<!-- DataTable -->
+@*@Scripts.Render("~/Content/vendor/datatables/jquery.dataTables.js")*@
+@Scripts.Render("~/Content/vendor/datatables/jquery.dataTables.min.js")
+@Scripts.Render("~/Content/vendor/datatables/dataTables.bootstrap4.js")
+@Scripts.Render("https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js")
+@Scripts.Render("https://cdn.datatables.net/plug-ins/1.10.19/api/fnFilterClear.js")
+@Scripts.Render("https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js")
+<!-- Select2 -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js")
+<!-- Numeric -->
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js")
+<!-- Daterange picker -->
+@Scripts.Render("https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
+<!-- Custom -->
+@Scripts.Render("~/Content/js/sb-admin.min.js")
+@Scripts.Render("~/Content/js/pages/stewardship.js")
+@Scripts.Render("~/Content/js/session-timeout.js")
